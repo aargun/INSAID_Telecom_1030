@@ -1,0 +1,57 @@
+Follow the instruction below to create a local copy of dataset:
+
+1. Download and Install MySQL server locally.
+2. Create Database with any name like 'Capstone1';
+
+------------------------------SQL CODE-------------------------------------
+CREATE DATABASE `Capstone1` /*!40100 DEFAULT CHARACTER SET latin1 */;
+---------------------------------------------------------------------------
+
+3. Create table structure similar to INSAID database either by exporting the structure or SQL script.
+
+------------------------------SQL CODE-------------------------------------	
+	CREATE TABLE `events_data` (
+	  `event_id` bigint(20) NOT NULL,
+	  `device_id` bigint(255) DEFAULT NULL,
+	  `timestamp` datetime NOT NULL,
+	  `longitude` float(8,6) DEFAULT NULL,
+	  `latitude` float(8,6) DEFAULT NULL,
+	  `city` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+	  `state` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
+	) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+	
+	
+	CREATE TABLE `gender_age_train` (
+	  `device_id` bigint(255) NOT NULL,
+	  `gender` varchar(2555) NOT NULL,
+	  `age` int(255) NOT NULL,
+	  `group` varchar(2555) NOT NULL
+	) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+	CREATE TABLE `phone_brand_device_model` (
+	  `device_id` bigint(255) NOT NULL,
+	  `phone_brand` varchar(2555) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+	  `device_model` varchar(2555) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
+	) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+---------------------------------------------------------------------------
+
+4. Export the data into CSV using SQL Workbench or SQL Script. events_data is already provided by INSAID.
+
+5. Import the data from CSV using:-
+
+------------------------------SQL CODE------------------------------------
+	LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/events_data.csv'
+	INTO TABLE events_data
+	FIELDS TERMINATED BY ',' 
+	ENCLOSED BY '"'
+	LINES TERMINATED BY '\n'
+	IGNORE 1 ROWS
+	(@event_id, @device_id, @`timestamp`, @longitude, @latitude, @city, @state)
+	SET event_id = if(@event_id = '', NULL, @event_id),
+		device_id = if(@device_id = '', NULL, @device_id),
+		`timestamp` = if(@`timestamp` = '', NULL, @`timestamp`),
+		longitude = if(@longitude = '', NULL, @longitude),
+		latitude = if(@latitude = '', NULL, @latitude),
+		city = if(@city = '', NULL, @city),
+		state = if(@state = '', NULL, @state);
+---------------------------------------------------------------------------
